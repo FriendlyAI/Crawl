@@ -1,0 +1,5 @@
+Self Text	100
+Images	0
+Tweets	0
+Videos	0
+Links	0
