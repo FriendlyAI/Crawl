@@ -14,7 +14,6 @@ import re
 import time
 import tkinter as tk
 import webbrowser
-from tkinter import font
 from tkinter import messagebox
 
 import praw
@@ -109,9 +108,7 @@ class Window:
 
         self.corpus_name = tk.Entry(self.master, width=20)
         self.corpus_name.bind('<Return>', func=self.textbox_enter)
-        andale_mono = tk.font.Font(family='Andale Mono')
-        self.corpus_name.configure(bd=0, highlightbackground='DarkOrchid1', highlightcolor="DeepPink1",
-                                   font=andale_mono)
+        self.corpus_name.configure(bd=0, highlightbackground='DarkOrchid1', highlightcolor="DeepPink1", font="Menlo")
         self.corpus_name.pack()
 
         # Submission sort
@@ -147,8 +144,7 @@ class Window:
         self.post_limit = tk.Entry(self.master, width=3)
         self.post_limit.insert(0, 10)
         self.post_limit.bind('<Return>', func=self.textbox_enter)
-        self.post_limit.configure(bd=0, highlightbackground='DarkOrchid1', highlightcolor="DeepPink1",
-                                  font=andale_mono)
+        self.post_limit.configure(bd=0, highlightbackground='DarkOrchid1', highlightcolor='DeepPink1', font='Menlo')
         self.post_limit.pack()
 
         # Add button
