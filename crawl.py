@@ -42,7 +42,7 @@ MARKOV_RE = re.compile(r"[\[(\"']?[^\W_]+(?:\'(?:d|ll|m|re|s|t|ve))?[.?\]/):,\"'
 REFERENCE_RE = re.compile(r'/?[ur]/\w+\Z')
 
 
-# From www.andreas-jung.com
+# Adapted from www.andreas-jung.com
 def timeit(func):
     def timed(*args, **kw):
         ts = time.time()
