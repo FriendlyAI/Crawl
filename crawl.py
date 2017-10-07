@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
+Andrew Li
 Crawl: Reddit Scraping and Analysis
 Term Project
-Andrew Li
 15-112 Summer 2017
 Section B
 """
