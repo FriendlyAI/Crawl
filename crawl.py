@@ -58,6 +58,8 @@ def timeit(func):
 
 class Window:
     def __init__(self, master):
+        # Window initialization
+
         self.master = master
         self.master.resizable(width=False, height=False)
         screen_width = master.winfo_screenwidth()  # width of the screen
