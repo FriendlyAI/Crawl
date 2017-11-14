@@ -25,6 +25,8 @@ REDDIT = praw.Reddit(client_id='wUZpv15zMB-TTQ',
                      username='Crawl112',
                      password='15112cmu')
 
+# REDDIT.read_only = True
+
 # Whitelist from http://www.ranks.nl/stopwords
 WHITELIST = set()
 try:
