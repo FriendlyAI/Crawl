@@ -9,6 +9,7 @@ Term Project
 Section B
 """
 
+import math
 import random
 import re
 import time
@@ -342,7 +343,6 @@ class Window:
 
         def create_word_cloud(corpus=None):
             self.circles = {}
-            start = 10
             sum_freq = 0
             total_freq = 0
             # Equidistant colors from stackoverflow.com
@@ -370,11 +370,48 @@ class Window:
                 for i in range(10):
                     sum_freq += corpus.words[top_keys[i]]
             random.shuffle(colors)
-            draw_word_bubbles(start, sum_freq, total_freq, words, top_keys, colors)
+            draw_word_bubbles(sum_freq, total_freq, words, top_keys, colors)
             canvas.update()
 
-        def draw_word_bubbles(start, sum_freq, total_freq, words, top_keys, colors):
-            for i in range(10):
+        def draw_word_bubbles(sum_freq, total_freq, words, top_keys, colors):
+
+            def to_radians(degrees):
+                return degrees / 180 * math.pi
+
+            start = 90
+            radii = [(words[top_keys[i]] / sum_freq) ** .5 for i in range(10)]
+            sum_radii = sum(radii)
+            proportions = [radius / sum_radii for radius in radii]
+            max_radius = proportions[0] * self.height / 2 + 20
+            second_radius = proportions[1] * self.height / 2 + max_radius
+
+            for i, radius in enumerate(proportions):
+                word, freq = top_keys[i], words[top_keys[i]]
+                actual_radius = radius * self.height / 2
+                if i == 0:
+                    canvas.create_oval(self.width / 2 - actual_radius, self.height / 2 - actual_radius,
+                                       self.width / 2 + actual_radius, self.height / 2 + actual_radius,
+                                       fill=colors[i], width=0)
+                    canvas.create_text(self.width / 2, self.height / 2,
+                                       text=word.center(7) + '\n({0:.2f}%)'
+                                       .format(freq / total_freq * 100))
+                    self.circles[(self.width / 2, self.height / 2, actual_radius)] = (freq, total_freq)
+                else:
+                    xc = self.width / 2 + math.cos(to_radians(start)) * second_radius
+                    yc = self.height / 2 + math.sin(to_radians(start)) * second_radius
+
+                    canvas.create_oval(xc - actual_radius, yc - actual_radius,
+                                       xc + actual_radius, yc + actual_radius,
+                                       fill=colors[i], width=0)
+                    canvas.create_text(xc, yc,
+                                       text=word.center(7) + '\n({0:.2f}%)'
+                                       .format(freq / total_freq * 100))
+                    self.circles[(xc, yc, actual_radius)] = (freq, total_freq)
+                    start += max(actual_radius / (math.pi * second_radius) * 360, 15)
+
+            ''' Linear pattern
+                start = 10
+                for i in range(10):
                 word, freq = top_keys[i], words[top_keys[i]]
                 proportion = freq / sum_freq
                 radius = (self.width - 100) * proportion / 2
@@ -392,6 +429,7 @@ class Window:
                     canvas.create_text(start, 300, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
                     self.circles[(start, 300, radius)] = (freq, total_freq)
                 start += max(radius, 15)
+            '''
 
         def more_info(event):
             if self.border and self.text:
@@ -534,7 +572,7 @@ class Window:
 
         canvas = tk.Canvas(visualization, width=self.width, height=self.height)
         canvas.bind('<Button-1>', more_info)
-        canvas.place(x=0, y=100)
+        canvas.place(x=0, y=30)
 
         # Post Markov Chain button
 
