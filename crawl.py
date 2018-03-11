@@ -451,7 +451,7 @@ class Window:
             num_bars = len(self.corpus_objects) + 1
             bar_width = (self.width - margin * (num_bars + 1)) / num_bars
             start_x = margin
-            start_y = 10
+            start_y = 50
             colors = {'Self Text': 'orange', 'Images': 'green', 'Tweets': 'cyan', 'Videos': 'red', 'Links': 'yellow'}
             with open('preloaded_domains.txt', 'r') as file:
                 for line in file.readlines():
@@ -459,26 +459,26 @@ class Window:
                     freq = int(freq)
                     if freq > 0:
                         canvas.create_rectangle(start_x, start_y,
-                                                start_x + bar_width, start_y + 4 * freq,
+                                                start_x + bar_width, start_y + 4.5 * freq,
                                                 fill=colors.get(domain), width=0)
                         canvas.create_text(start_x + bar_width / 2, start_y + 2 * freq,
                                            text=domain + f' ({freq}%)', font='TkDefaultFont 10')
-                        start_y += 4 * freq
+                        start_y += 4.5 * freq
             canvas.create_text(start_x + bar_width / 2, start_y + 15, text='Preloaded (/r/askreddit)',
                                font='TkDefaultFont 10')
             start_x += margin + bar_width
-            start_y = 10
+            start_y = 50
             for corpus in self.corpus_objects:
                 total = sum(corpus.domains.values())
                 for domain in reversed(sorted(corpus.domains.keys(), key=corpus.domains.get)):
                     freq = int(corpus.domains[domain] / total * 100)
                     if freq > 0:
                         canvas.create_rectangle(start_x, start_y,
-                                                start_x + bar_width, start_y + 4 * freq,
+                                                start_x + bar_width, start_y + 4.5 * freq,
                                                 fill=colors.get(domain), width=0)
                         canvas.create_text(start_x + bar_width / 2, start_y + 2 * freq,
                                            text=domain + f' ({freq}%)', font='TkDefaultFont 10')
-                        start_y += 4 * freq
+                        start_y += 4.5 * freq
                 name = '/{0}/{1}'.format('u' if corpus.type_ == 'User' else 'r', corpus.name)
                 canvas.create_text(start_x + bar_width / 2, start_y + 15, text=name,
                                    font='TkDefaultFont 10')
@@ -499,7 +499,7 @@ class Window:
                 word_chain = generate_word_chain(words)
                 start_words = [key for key in word_chain.keys() if key[0][0].isupper()]
                 markov_chain_sentence = generate_markov_chain(start_words, word_chain)
-                canvas.create_text(self.width / 2, 100, text=markov_chain_sentence, width=500,
+                canvas.create_text(self.width / 2, 200, text=markov_chain_sentence, width=500,
                                    font='TkDefaultFont 20')
             self.markov_cache = markov_chain_sentence
 
