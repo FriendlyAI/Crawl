@@ -374,6 +374,34 @@ class Window:
             canvas.update()
 
         def draw_word_bubbles(sum_freq, total_freq, words, top_keys, colors):
+            use_linear.configure(state='normal')
+            if use_linear_var.get():  # Use linear visulization
+                linear_pattern(sum_freq, total_freq, words, top_keys, colors)
+            else:
+                circular_pattern(sum_freq, total_freq, words, top_keys, colors)
+
+        def linear_pattern(sum_freq, total_freq, words, top_keys, colors):
+            start = 10
+            for i in range(10):
+                word, freq = top_keys[i], words[top_keys[i]]
+                proportion = freq / sum_freq
+                radius = (self.width - 100) * proportion / 2
+                start += max(radius, 15)
+                if i % 2 == 0:
+                    canvas.create_oval(start - radius, 200 - radius,
+                                       start + radius, 200 + radius,
+                                       fill=colors[i], width=0)
+                    canvas.create_text(start, 200, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
+                    self.circles[(start, 200, radius)] = (freq, total_freq)
+                else:
+                    canvas.create_oval(start - radius, 300 - radius,
+                                       start + radius, 300 + radius,
+                                       fill=colors[i], width=0)
+                    canvas.create_text(start, 300, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
+                    self.circles[(start, 300, radius)] = (freq, total_freq)
+                start += max(radius, 15)
+
+        def circular_pattern(sum_freq, total_freq, words, top_keys, colors):
 
             def to_radians(degrees):
                 return degrees / 180 * math.pi
@@ -408,28 +436,6 @@ class Window:
                                        .format(freq / total_freq * 100))
                     self.circles[(xc, yc, actual_radius)] = (freq, total_freq)
                     start += max(actual_radius / (math.pi * second_radius) * 360, 15)
-
-            ''' Linear pattern
-                start = 10
-                for i in range(10):
-                word, freq = top_keys[i], words[top_keys[i]]
-                proportion = freq / sum_freq
-                radius = (self.width - 100) * proportion / 2
-                start += max(radius, 15)
-                if i % 2 == 0:
-                    canvas.create_oval(start - radius, 200 - radius,
-                                       start + radius, 200 + radius,
-                                       fill=colors[i], width=0)
-                    canvas.create_text(start, 200, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
-                    self.circles[(start, 200, radius)] = (freq, total_freq)
-                else:
-                    canvas.create_oval(start - radius, 300 - radius,
-                                       start + radius, 300 + radius,
-                                       fill=colors[i], width=0)
-                    canvas.create_text(start, 300, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
-                    self.circles[(start, 300, radius)] = (freq, total_freq)
-                start += max(radius, 15)
-            '''
 
         def more_info(event):
             if self.border and self.text:
@@ -486,7 +492,6 @@ class Window:
                 start_y = 10
 
         def get_markov_chain(corpus=None):
-            post.configure(state='normal')
             if corpus:
                 markov_chain_sentence = generate_markov_chain(corpus.start_words, corpus.word_chain)
                 canvas.create_text(self.width / 2, 100, text=markov_chain_sentence, width=500,
@@ -522,6 +527,10 @@ class Window:
             if event == 'Link Types':
                 self.circles = {}
                 objects.configure(state='disabled')
+
+                use_linear.configure(state='disabled')
+                use_linear.grid_forget()
+
                 post.configure(state='disabled')
                 post.grid_forget()
                 posted_label.place_forget()
@@ -529,9 +538,18 @@ class Window:
             elif event == 'Markov Chain':
                 self.circles = {}
                 objects.configure(state='normal')
+
+                use_linear.configure(state='disabled')
+                use_linear.grid_forget()
+
                 post.grid(row=0, column=3)
-            else:
+                post.configure(state='normal')
+            else:  # Word Frequency
                 objects.configure(state='normal')
+
+                use_linear.grid(row=0, column=3)
+                use_linear.configure(state='normal')
+
                 post.configure(state='disabled')
                 post.grid_forget()
                 posted_label.place_forget()
@@ -573,6 +591,13 @@ class Window:
         canvas = tk.Canvas(visualization, width=self.width, height=self.height)
         canvas.bind('<Button-1>', more_info)
         canvas.place(x=0, y=30)
+
+        # Word bubble type toggle
+
+        use_linear_var = tk.IntVar()
+
+        use_linear = tk.Checkbutton(visualization, text='Use linear visualization', variable=use_linear_var)
+        use_linear.grid(row=0, column=3)
 
         # Post Markov Chain button
 
