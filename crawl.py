@@ -201,10 +201,10 @@ class Window:
                                        '1. Choose "User" or "Subreddit" as your desired analysis type.\n\n'
                                        '2. Enter the name of your desired page. Ex. "askreddit"\n\n'
                                        '3. Choose sorting options for the submissions.\n\n'
-                                       '4. If you chose to analyze a subreddit, you can also choose comment sorting\n'
+                                       '4. If you choose to analyze a subreddit, you can also choose comment sorting\n'
                                        'and a limit for the number of submissions you analyze.\n\n'
                                        '5. Click the "Add" button and wait for analysis to complete. This may take up\n'
-                                       'to a minute depending on the popularity and limit.\n\n'
+                                       'to a minute dependant on the popularity and limit.\n\n'
                                        '6. After adding, the subreddit or user will automatically be added to a list\n'
                                        'of analyzed pages. These are automatically stored and can be removed at any\n'
                                        'time by selecting the desired subreddit or user and clicking the "Delete\n'
@@ -297,6 +297,9 @@ class Window:
                                        .format(limit if limit else '<NONE>'))
 
             else:
+                # Clear comment log
+                open('comments_log.txt', 'w+').truncate()
+
                 # Show loading image and label
                 wait_label = tk.Label(self.master, text='please wait...', fg='red')
                 wait_label.place(x=710, y=580)
@@ -382,24 +385,27 @@ class Window:
 
         def linear_pattern(sum_freq, total_freq, words, top_keys, colors):
             start = 10
-            for i in range(10):
+            radii = [(words[top_keys[i]] / sum_freq) ** .5 for i in range(10)]
+            sum_radii = sum(radii)
+            proportions = [radius / sum_radii for radius in radii]
+
+            for i, radius in enumerate(proportions):
                 word, freq = top_keys[i], words[top_keys[i]]
-                proportion = freq / sum_freq
-                radius = (self.width - 100) * proportion / 2
-                start += max(radius, 15)
+                actual_radius = radius * self.height / 2
+                start += max(actual_radius, 15)
                 if i % 2 == 0:
-                    canvas.create_oval(start - radius, 200 - radius,
-                                       start + radius, 200 + radius,
+                    canvas.create_oval(start - actual_radius, 200 - actual_radius,
+                                       start + actual_radius, 200 + actual_radius,
                                        fill=colors[i], width=0)
                     canvas.create_text(start, 200, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
-                    self.circles[(start, 200, radius)] = (freq, total_freq)
+                    self.circles[(start, 200, actual_radius)] = (freq, total_freq)
                 else:
-                    canvas.create_oval(start - radius, 300 - radius,
-                                       start + radius, 300 + radius,
+                    canvas.create_oval(start - actual_radius, 300 - actual_radius,
+                                       start + actual_radius, 300 + actual_radius,
                                        fill=colors[i], width=0)
                     canvas.create_text(start, 300, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
-                    self.circles[(start, 300, radius)] = (freq, total_freq)
-                start += max(radius, 15)
+                    self.circles[(start, 300, actual_radius)] = (freq, total_freq)
+                start += max(actual_radius, 15)
 
         def circular_pattern(sum_freq, total_freq, words, top_keys, colors):
 
@@ -494,7 +500,7 @@ class Window:
         def get_markov_chain(corpus=None):
             if corpus:
                 markov_chain_sentence = generate_markov_chain(corpus.start_words, corpus.word_chain)
-                canvas.create_text(self.width / 2, 100, text=markov_chain_sentence, width=500,
+                canvas.create_text(self.width / 2, 200, text=markov_chain_sentence, width=500,
                                    font='TkDefaultFont 20')
             else:
                 words = []
@@ -741,6 +747,8 @@ def clean_comment(comment):
             if token == 'nbsp':
                 continue
             cleaned.append(token)
+    with open('comments_log.txt', 'a+') as file:
+        file.write(comment)  # Log for all comments analyzed
     return cleaned
 
 
@@ -811,6 +819,7 @@ def get_corpus_from_subreddit(subreddit, sort, comment_sort, limit):
 
 if __name__ == '__main__':
     open('log.txt', 'w+').truncate()
+    open('comments_log.txt', 'w+').truncate()
     root = tk.Tk()
     window = Window(root)
     root.mainloop()
