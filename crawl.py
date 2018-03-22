@@ -530,6 +530,8 @@ class Window:
         def changed_analysis_type(event):
             # Disable corpus chooser if analyzing all
             self.markov_cache = ''
+            posted_label.place_forget()
+            url_label.place_forget()
             if event == 'Link Types':
                 self.circles = {}
                 objects.configure(state='disabled')
@@ -539,7 +541,6 @@ class Window:
 
                 post.configure(state='disabled')
                 post.grid_forget()
-                posted_label.place_forget()
                 url_label.place_forget()
             elif event == 'Markov Chain':
                 self.circles = {}
@@ -558,8 +559,6 @@ class Window:
 
                 post.configure(state='disabled')
                 post.grid_forget()
-                posted_label.place_forget()
-                url_label.place_forget()
 
         self.master.withdraw()  # Make master invisible
         visualization = tk.Toplevel()
