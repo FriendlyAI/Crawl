@@ -495,7 +495,7 @@ class Window:
                 canvas.create_text(start_x + bar_width / 2, start_y + 15, text=name,
                                    font='TkDefaultFont 10')
                 start_x += margin + bar_width
-                start_y = 10
+                start_y = 50
 
         def get_markov_chain(corpus=None):
             if corpus:
