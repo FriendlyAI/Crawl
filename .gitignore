@@ -1,5 +1,5 @@
 .idea/
 comments_log.txt
 log.txt
-.idea/*.iml
+.idea/workspace.iml
 *.xml
