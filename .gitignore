@@ -3,3 +3,4 @@ comments_log.txt
 log.txt
 .idea/workspace.iml
 *.xml
+__pycache__
