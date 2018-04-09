@@ -1,6 +1,5 @@
 .idea/
-comments_log.txt
-log.txt
+Logs/
 .idea/workspace.iml
 *.xml
 __pycache__
