@@ -31,15 +31,15 @@ REDDIT = praw.Reddit(client_id='wUZpv15zMB-TTQ',
 # Whitelist from http://www.ranks.nl/stopwords
 WHITELIST = set()
 try:
-    with open("whitelist.txt", "r") as f:
+    with open('Data/whitelist.txt', 'r') as f:
         for stopword in f.readlines():
             WHITELIST.add(stopword.strip())
 except FileNotFoundError:
-    print('ERROR: whitelist.txt file missing from folder.')
+    print('ERROR: Data/whitelist.txt file missing from folder.')
 
 # URL_RE and TOKEN_RE patterns from https://github.com/rhiever
 URL_RE = re.compile(r'^(.*http(s)?://|www.)|.(com|it|net|org)($|/)')
-TOKEN_RE = re.compile(r"[^\W_]+(?:\'(?:d|ll|m|re|s|t|ve))?")
+TOKEN_RE = re.compile(r"[^\W_]+(?:'(?:d|ll|m|re|s|t|ve))?")
 
 MARKOV_RE = re.compile(r"[\[(\"']?[^\W_]+(?:\'(?:d|ll|m|re|s|t|ve))?[.?\]/):,\"']?")
 REFERENCE_RE = re.compile(r'/?[ur]/\w+\Z')
@@ -52,7 +52,7 @@ def timeit(func):
         result = func(*args, **kw)
         te = time.time()
 
-        with open('log.txt', 'a+') as file:
+        with open('Logs/log.txt', 'a+') as file:
             file.write('%r took %2.2f sec\n' % (func.__name__, te - ts))
         return result
 
@@ -87,8 +87,8 @@ class Window:
         self.visualize.place(x=self.width / 2, y=self.height - 40, anchor='c')
 
         # Icon
-        self.image = tk.PhotoImage(file='icon.gif')
-        self.image2 = tk.PhotoImage(file='loading.gif')
+        self.image = tk.PhotoImage(file='Data/icon.gif')
+        self.image2 = tk.PhotoImage(file='Data/loading.gif')
         self.icon = tk.Label(self.master, image=self.image)
         self.icon.pack()
 
@@ -298,7 +298,7 @@ class Window:
 
             else:
                 # Clear comment log
-                open('comments_log.txt', 'w+').truncate()
+                open('Logs/comments_log.txt', 'w+').truncate()
 
                 # Show loading image and label
                 wait_label = tk.Label(self.master, text='please wait...', fg='red')
@@ -356,7 +356,7 @@ class Window:
                 words = {}
                 top_keys = []
                 count = 0
-                with open('preloaded_corpus.txt', 'r') as file:
+                with open('Data/preloaded_corpus.txt', 'r') as file:
                     for line in file.readlines():
                         key, val = line.split('\t')
                         top_keys.append(key)
@@ -465,7 +465,7 @@ class Window:
             start_x = margin
             start_y = 50
             colors = {'Self Text': 'orange', 'Images': 'green', 'Tweets': 'cyan', 'Videos': 'red', 'Links': 'yellow'}
-            with open('preloaded_domains.txt', 'r') as file:
+            with open('Data/preloaded_domains.txt', 'r') as file:
                 for line in file.readlines():
                     domain, freq = line.split('\t')
                     freq = int(freq)
@@ -504,7 +504,7 @@ class Window:
                                    font='TkDefaultFont 20')
             else:
                 words = []
-                with open('preloaded_comments.txt', 'r') as file:
+                with open('Data/preloaded_comments.txt', 'r') as file:
                     for line in file.readlines():
                         words.append(line)
                 word_chain = generate_word_chain(words)
@@ -641,12 +641,15 @@ class CorpusMetadata:
         self.get_corpus()
         self.count_domains()
         self.count_words()
+
+        # Markov chain
+
         self.word_chain = {}
         self.word_chain = generate_word_chain(self.corpus)
         self.start_words = [key for key in self.word_chain.keys() if key[0][0].isupper()]
 
     def log(self):
-        with open('log.txt', 'a+') as file:
+        with open('Logs/log.txt', 'a+') as file:
             file.write('\nType: {0}\nName: {1}\nSubmission Sort: {2}\nComment Sort: {3}\n'.format
                        (self.type_, self.name, self.sort, self.comment_sort))
 
@@ -746,7 +749,7 @@ def clean_comment(comment):
             if token == 'nbsp':
                 continue
             cleaned.append(token)
-    with open('comments_log.txt', 'a+') as file:
+    with open('Logs/comments_log.txt', 'a+') as file:
         file.write(comment)  # Log for all comments analyzed
     return cleaned
 
@@ -793,7 +796,7 @@ def get_corpus_from_user(user, sort='top'):
         comments.extend([submission.title, submission.selftext])
     for comment in create_iterable_by_sort(user.comments, sort, 500):
         comments.append(comment.body)
-    with open('log.txt', 'a+') as file:
+    with open('Logs/log.txt', 'a+') as file:
         file.write('Number of comments and submissions analyzed: {}\n'.format(len(comments)))
     return comments
 
@@ -811,14 +814,14 @@ def get_corpus_from_subreddit(subreddit, sort, comment_sort, limit):
     comments = []
     for submission in create_iterable_by_sort(REDDIT.subreddit(subreddit), sort, limit):
         comments.extend(get_corpus_from_submission(submission, comment_sort))
-    with open('log.txt', 'a+') as file:
+    with open('Logs/log.txt', 'a+') as file:
         file.write('Number of submissions analyzed: {}\nNumber of comments analyzed: {}\n'.format(limit, len(comments)))
     return comments
 
 
 if __name__ == '__main__':
-    open('log.txt', 'w+').truncate()
-    open('comments_log.txt', 'w+').truncate()
+    open('Logs/log.txt', 'w+').truncate()
+    open('Logs/comments_log.txt', 'w+').truncate()
     root = tk.Tk()
     window = Window(root)
     root.mainloop()
