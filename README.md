@@ -20,10 +20,8 @@ can continuously generate these simulated sentences during visualization.
 
 Parts of the project include functions that are timed for logging use, and use Python’s time module.
 
-***
 Make sure to run in UTF-8 encoding to prevent crashes from non-ascii characters.
 This must be manually done in IDLE and some IDEs.
-***
 
 Installation
 ------------
@@ -35,5 +33,4 @@ Dependencies:
 Recommended:
 pip install praw
 
-PRAW module also included in folder named PRAW.
 Also available at https://github.com/praw-dev/praw.
