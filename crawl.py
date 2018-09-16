@@ -95,7 +95,7 @@ class Window:
         # Corpus type
 
         self.type_label = tk.Label(self.master, text='Type:')
-        self.type_label.place(x=300, y=206)
+        self.type_label.place(x=280, y=205)
 
         self.corpus_type_variable = tk.StringVar(self.master)
         self.corpus_types = ['Subreddit', 'User']
@@ -109,7 +109,7 @@ class Window:
         # Corpus name
 
         self.name_label = tk.Label(self.master, text='Name:')
-        self.name_label.place(x=270, y=233)
+        self.name_label.place(x=268, y=229)
 
         self.corpus_name = tk.Entry(self.master, width=20)
         self.corpus_name.bind('<Return>', func=self.textbox_enter)
@@ -119,7 +119,7 @@ class Window:
         # Submission sort
 
         self.subsort_label = tk.Label(self.master, text='Submissions By:')
-        self.subsort_label.place(x=234, y=259)
+        self.subsort_label.place(x=210, y=252)
 
         self.sort_type_variable = tk.StringVar(self.master)
         self.sort_types = ['hot', 'top', 'new', 'controversial']
@@ -131,7 +131,7 @@ class Window:
         # Comment sort
 
         self.comsort_label = tk.Label(self.master, text='Subreddit Comments By:')
-        self.comsort_label.place(x=182, y=289)
+        self.comsort_label.place(x=156, y=276)
 
         self.comment_sort_type_variable = tk.StringVar(self.master)
         self.comment_sort_types = ['best', 'top', 'new', 'controversial']
@@ -144,7 +144,7 @@ class Window:
         # Post limit for subreddits
 
         self.post_limit_label = tk.Label(self.master, text='Subreddit Post Limit:')
-        self.post_limit_label.place(x=250, y=316)
+        self.post_limit_label.place(x=242, y=300)
 
         self.post_limit = tk.Entry(self.master, width=3)
         self.post_limit.insert(0, 10)
@@ -729,7 +729,7 @@ def generate_markov_chain(start_words, word_chain):
         except KeyError:
             break
         sentence.append(third)
-        if third[-1] in ['!', '.', '?']:
+        if third[-1] in {'!', '.', '?'}:
             break
         first, second = second, third
         max_len += 1
