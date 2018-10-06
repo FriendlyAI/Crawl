@@ -1,4 +1,6 @@
 Crawl: Reddit Scraping and Analysis
+Andrew Li
+Python 3.6
 ===================================
 
 Info
