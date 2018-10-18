@@ -193,7 +193,7 @@ class Window:
             help_window.bind('<Return>', lambda _: self.show_master(manual=help_window))
 
             # Instructions
-            welcome_label = tk.Label(help_window, text='Welcome to Crawl!', font='Futura 24 bold', fg='orange red')
+            welcome_label = tk.Label(help_window, text='\nWelcome to Crawl!', font='Futura 24 bold', fg='orange red')
             welcome_label.pack()
             help_label = tk.Label(help_window,
                                   justify='left',
@@ -398,13 +398,13 @@ class Window:
                                        start + actual_radius, 200 + actual_radius,
                                        fill=colors[i], width=0)
                     canvas.create_text(start, 200, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
-                    self.circles[(start, 200, actual_radius)] = (freq, total_freq)
+                    self.circles[word] = (start, 200, actual_radius, freq, total_freq)
                 else:
                     canvas.create_oval(start - actual_radius, 300 - actual_radius,
                                        start + actual_radius, 300 + actual_radius,
                                        fill=colors[i], width=0)
                     canvas.create_text(start, 300, text=word.center(8) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
-                    self.circles[(start, 300, actual_radius)] = (freq, total_freq)
+                    self.circles[word] = (start, 300, actual_radius, freq, total_freq)
                 start += max(actual_radius, 15)
 
         def circular_pattern(sum_freq, total_freq, words, top_keys, colors):
@@ -427,9 +427,8 @@ class Window:
                                        self.width / 2 + actual_radius, self.height / 2 + actual_radius,
                                        fill=colors[i], width=0)
                     canvas.create_text(self.width / 2, self.height / 2,
-                                       text=word.center(7) + '\n({0:.2f}%)'
-                                       .format(freq / total_freq * 100))
-                    self.circles[(self.width / 2, self.height / 2, actual_radius)] = (freq, total_freq)
+                                       text=word.center(7) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
+                    self.circles[word] = (self.width / 2, self.height / 2, actual_radius, freq, total_freq)
                 else:
                     xc = self.width / 2 + math.cos(to_radians(start)) * second_radius
                     yc = self.height / 2 + math.sin(to_radians(start)) * second_radius
@@ -437,25 +436,20 @@ class Window:
                     canvas.create_oval(xc - actual_radius, yc - actual_radius,
                                        xc + actual_radius, yc + actual_radius,
                                        fill=colors[i], width=0)
-                    canvas.create_text(xc, yc,
-                                       text=word.center(7) + '\n({0:.2f}%)'
-                                       .format(freq / total_freq * 100))
-                    self.circles[(xc, yc, actual_radius)] = (freq, total_freq)
+                    canvas.create_text(xc, yc, text=word.center(7) + '\n({0:.2f}%)'.format(freq / total_freq * 100))
+                    self.circles[word] = (xc, yc, actual_radius, freq, total_freq)
                     start += max(actual_radius / (math.pi * second_radius) * 360, 15)
 
         def more_info(event):
             if self.border and self.text:
                 canvas.delete(self.border)
                 canvas.delete(self.text)
-            for (x, y, radius), (freq, total) in self.circles.items():
+            for word, (x, y, radius, freq, total) in self.circles.items():
                 if (event.x - x) ** 2 + (event.y - y) ** 2 < radius ** 2:
                     event.x = min(max(5, event.x - 120), self.width - 245)
                     event.y = max(5, event.y - 40)
-                    self.border = canvas.create_rectangle(event.x, event.y,
-                                                          event.x + 240, event.y + 20,
-                                                          fill='white')
-                    self.text = canvas.create_text(event.x + 120, event.y + 10,
-                                                   text='Occurances/All Words: {0}/{1}'.format(freq, total))
+                    self.border = canvas.create_rectangle(event.x, event.y, event.x + 200, event.y + 20, fill='white')
+                    self.text = canvas.create_text(event.x + 100, event.y + 10, text=f'{word}: {freq}/{total}')
                     return
 
         def create_link_type_graph():
@@ -464,7 +458,8 @@ class Window:
             bar_width = (self.width - margin * (num_bars + 1)) / num_bars
             start_x = margin
             start_y = 50
-            colors = {'Self Text': 'orange', 'Images': 'green', 'Tweets': 'cyan', 'Videos': 'red', 'Links': 'yellow'}
+            colors = {'Self Text': 'light grey', 'Images': 'spring green', 'Tweets': 'cyan', 'Videos': 'orange red',
+                      'Links': 'yellow'}
             with open('Data/preloaded_domains.txt', 'r') as file:
                 for line in file.readlines():
                     domain, freq = line.split('\t')
