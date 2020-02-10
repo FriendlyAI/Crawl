@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 Andrew Li
 Crawl: Reddit Scraping and Analysis
@@ -25,8 +22,6 @@ REDDIT = praw.Reddit(client_id='wUZpv15zMB-TTQ',
                      user_agent='MacOS:Crawl:v1.0 (by /u/Crawl112)',
                      username='Crawl112',
                      password='15112cmu')
-
-# REDDIT.read_only = True
 
 # Whitelist from http://www.ranks.nl/stopwords
 WHITELIST = set()
@@ -76,13 +71,11 @@ class Window:
         self.master.bind('<Key>', self.help)
 
         # Initialization
-
         self.corpus_objects = []
         self.corpus_objects_id = []
         self.markov_cache = ''
 
         # Visualize button
-
         self.visualize = tk.Button(self.master, text='Visualize Data', command=self.visualize_data)
         self.visualize.place(x=self.width / 2, y=self.height - 40, anchor='c')
 
@@ -93,7 +86,6 @@ class Window:
         self.icon.pack()
 
         # Corpus type
-
         self.type_label = tk.Label(self.master, text='Type:')
         self.type_label.place(x=280, y=205)
 
@@ -107,7 +99,6 @@ class Window:
         self.corpus_type.pack()
 
         # Corpus name
-
         self.name_label = tk.Label(self.master, text='Name:')
         self.name_label.place(x=268, y=229)
 
@@ -117,7 +108,6 @@ class Window:
         self.corpus_name.pack()
 
         # Submission sort
-
         self.subsort_label = tk.Label(self.master, text='Submissions By:')
         self.subsort_label.place(x=210, y=252)
 
@@ -129,7 +119,6 @@ class Window:
         self.sort_type.pack()
 
         # Comment sort
-
         self.comsort_label = tk.Label(self.master, text='Subreddit Comments By:')
         self.comsort_label.place(x=156, y=276)
 
@@ -142,7 +131,6 @@ class Window:
         self.comment_sort_type.pack()
 
         # Post limit for subreddits
-
         self.post_limit_label = tk.Label(self.master, text='Subreddit Post Limit:')
         self.post_limit_label.place(x=242, y=300)
 
@@ -153,18 +141,15 @@ class Window:
         self.post_limit.pack()
 
         # Add button
-
         self.add = tk.Button(self.master, text='Add', command=self.add_corpus)
         self.add.pack()
 
         # Listbox of analyzed corpuses
-
         self.corpus_list = tk.Listbox(self.master, selectmode='single')
         self.corpus_list.configure(width=30, height=8)
         self.corpus_list.pack()
 
         # Delete button
-
         self.delete = tk.Button(self.master, text='Delete Analysis', command=self.delete_corpus)
         self.delete.pack()
 
@@ -217,7 +202,6 @@ class Window:
             help_label.pack()
 
             # OK button
-
             ok_button = tk.Button(help_window, text='OK', command=lambda: self.show_master(manual=help_window))
             ok_button.pack()
 
