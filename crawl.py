@@ -601,7 +601,7 @@ class Window:
 
         # Post Markov Chain button
 
-        post = tk.Button(visualization, text='Post to /u/112Crawl', command=post_markov_chain)
+        post = tk.Button(visualization, text='Post to /u/Crawl112', command=post_markov_chain)
         post.grid(row=0, column=3)
         post.grid_forget()
         post.configure(state='disabled')
