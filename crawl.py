@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Andrew Li
 Crawl: Reddit Scraping and Analysis

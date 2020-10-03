@@ -28,9 +28,9 @@ Installation
 
 Dependencies:
 
--PRAW
+- PRAW
 
-Recommended:
-pip install praw
+Recommended: 
+`pip install praw`
 
 Also available at https://github.com/praw-dev/praw.
